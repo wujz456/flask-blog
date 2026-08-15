@@ -17,7 +17,7 @@ if WIN:
 else:
     prefix = 'sqlite:////'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = prefix + os.path.join(app.root_path, 'articles.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/wujz456/articles.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
