@@ -6,7 +6,7 @@ from forms import ArticleForm, RegisterForm, LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'wjz5566'
+app.secret_key = os.getenv('SECRET_KEY', 'wjz5566')
 
 # 数据库配置
 import os
