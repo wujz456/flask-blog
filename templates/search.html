@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}搜索{% endblock %}
+{% block page_title %}搜索{% endblock %}
+
+{% block content %}
+    <form action="/search" method="get">
+        <input type="text" name="q" placeholder="输入搜索关键词..." value="{{ keyword }}">
+        <button type="submit">搜索</button>
+    </form>
+
+    {% if keyword %}
+        <p>你搜索的是：<strong>{{ keyword }}</strong></p>
+    {% endif %}
+    {% if result %}
+        <h3>搜索结果：</h3>
+        <ul>
+        {% for article in result %}
+            <li>{{ article.title }}（{{ article.category }}）</li>
+        {% endfor %}
+        </ul>
+    {% elif keyword %}
+        <p>没有找到包含"{{ keyword }}"的文章。</p>
+    {% endif %}
+{% endblock %}

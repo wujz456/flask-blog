@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}编辑文章{% endblock %}
+
+{% block page_title %}编辑文章{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <p>{{ form.title.label }}: {{ form.title(placeholder='文章标题') }}</p>
+        <p>{{ form.category.label }}: {{ form.category(placeholder='分类') }}</p>
+        <p>{{ form.author_id.label }}: {{ form.author_id() }}</p>
+        <p>{{ form.tag_ids.label }}: {{ form.tag_ids() }}</p>
+        <p>{{ form.body.label }}: {{ form.body(placeholder='文章正文') }}</p>
+        <button type="submit">保存修改</button>
+        <a href="{{ url_for('index') }}">取消</a>
+    </form>
+{% endblock %}

@@ -1,0 +1,64 @@
+body {                          /* 选中整个页面 */
+    font-family: 'Microsoft YaHei', sans-serif;
+    max-width: 800px;
+    margin: 30px auto;          /* 外边距 */
+    padding: 20px;              /* 内边距 */
+    background: #f5f5f5;
+    line-height: 1.6;
+}
+h1 { color: #2c3e50; }          /* 选中所有一级标题 */    
+h2 { color: #34495e; }
+li { margin: 8px 0; }
+nav {
+    background: #274f77;         /* 深色背景 */
+    padding: 12px 20px;          /* 上下12 左右20 */
+    border-radius: 8px;          /* 圆角 */
+}
+nav a {
+    color: #fff;                 /* 白色文字 */
+    text-decoration: none;       /* 去掉下划线 */
+    margin-right: 15px;          /* 链接之间间距 */
+}
+nav a:hover {
+    color: #f39c12;              /* 鼠标悬停变橙色 */
+}
+.article-item {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    list-style: none;          /* 去掉默认圆点 */
+}
+
+.article-item a {
+    color: #154f8a;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.article-item a:hover {
+    color: #f39c12;
+}
+/* 输入框 */
+input[type="text"], textarea, select {/* 属性选择器——"选中 type 是 text 的 input"。text 输入框、下拉框、多行文本框都美化一遍。 */
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 按钮 */
+button {
+    background: #3498db;         /* 蓝色 */
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;             /* 鼠标变成小手 */
+}
+
+button:hover {
+    background: #2980b9;         /* 悬停变深蓝 */
+}

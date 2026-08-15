@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}标签：{{ tag.name }}{% endblock %}
+
+{% block page_title %}标签：{{ tag.name }}{% endblock %}
+
+{% block content %}
+    <p>共 {{ articles|length }} 篇文章：</p>
+    <ul>
+        {% for article in articles %}
+            <li>{{ article.title }}（{{ article.category }}）</li>
+        {% endfor %}
+    </ul>
+    <p><a href="{{ url_for('index') }}">返回首页</a></p>
+{% endblock %}

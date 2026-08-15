@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}标签管理{% endblock %}
+
+{% block page_title %}标签管理{% endblock %}
+
+{% block content %}
+    <h2>添加标签</h2>
+    <form method="post">
+        <input type="text" name="name" placeholder="标签名字" required>
+        <button type="submit">添加</button>
+    </form>
+
+    <h2>标签列表</h2>
+    <ul>
+        {% for tag in tags %}
+            <li><a href="{{ url_for('tag_detail', tag_id=tag.id) }}">{{ tag.name }}</a>（{{ tag.articles|length }} 篇文章）</li>
+                <form method="post" action="{{ url_for('delete_tag', tag_id=tag.id) }}" style="display:inline;">
+            <button type="submit" onclick="return confirm('确认删除标签{{ tag.name }}？')" style="color:red;">删</button>
+        </form>
+            {% endfor %}
+    </ul>
+{% endblock %}

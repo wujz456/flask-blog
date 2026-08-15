@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}页面不存在{% endblock %}
+{% block page_title %}404 - 页面走丢了{% endblock %}
+
+{% block content %}
+    <p>你访问的页面不存在，请检查地址是否输入正确。</p>
+    <p><a href="{{ url_for('index') }}">返回首页</a></p>
+    <p>要不试试<a href="{{ url_for('search') }}">搜搜看</a>？</p>
+{% endblock %}
