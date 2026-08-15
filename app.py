@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+import sys
 import click
 from flask import Flask, render_template, request, redirect, flash, url_for, session,abort
 from flask_sqlalchemy import SQLAlchemy
@@ -9,8 +11,6 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'wjz5566')
 
 # 数据库配置
-import os
-import sys
 WIN = sys.platform.startswith('win')
 if WIN:
     prefix = 'sqlite:///'
