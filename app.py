@@ -11,13 +11,10 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'wjz5566')
 
 # 数据库配置
-WIN = sys.platform.startswith('win')
-if WIN:
-    prefix = 'sqlite:///'
-else:
-    prefix = 'sqlite:////'
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/wujz456/articles.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    'DATABASE_URL',
+    'sqlite:///articles.db'
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
