@@ -4,6 +4,7 @@ import sys
 import click
 from flask import Flask, render_template, request, redirect, flash, url_for, session,abort
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from forms import ArticleForm, RegisterForm, LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -17,6 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # 定义文章模型
 article_tags = db.Table(
@@ -52,6 +54,7 @@ class Article(db.Model):
     category = db.Column(db.String(50), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('author.id'))  # 外键
     body = db.Column(db.Text, nullable=False)   # 正文
+    views = db.Column(db.Integer, nullable=False, default=0)
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -64,9 +67,6 @@ class Tag(db.Model):
     articles = db.relationship('Article', secondary=article_tags, backref='tags')
    #secondary指定多对多使用哪一张中间表，必须传入前面定义的 db.Table 对象。
 
-# 创建表（首次运行自动建表）
-with app.app_context():
-    db.create_all()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
