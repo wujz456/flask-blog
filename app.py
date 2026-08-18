@@ -36,8 +36,8 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 from functools import wraps
 
-def login_required(view_func):
-    @wraps(view_func)
+def login_required(view_func):#装饰器提前做登录检查，不用把登录判断复制到每一个路由里
+    @wraps(view_func)#from functools import wraps，加上@wraps(原函数)防止 url_for 出错
     def wrapped(*args, **kwargs):
         if 'user_id' not in session:
             flash('请先登录！')
@@ -56,45 +56,67 @@ class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     articles = db.relationship('Article', backref='author', cascade='all, delete-orphan')  # 一对多：一个作者多篇文章
-
+#cascade='all, delete‑orphan'：删除作者，他所有文章一起被删掉
+#backref :反向引用，不用在 Article 再写一遍 relationship，自动生成 .author 属性。
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     articles = db.relationship('Article', secondary=article_tags, backref='tags')
-   
+   #secondary指定多对多使用哪一张中间表，必须传入前面定义的 db.Table 对象。
+
 # 创建表（首次运行自动建表）
 with app.app_context():
     db.create_all()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # 实例化表单对象
     form = ArticleForm()
+    # 给下拉选择框：作者，动态设置选项
+    # [(数据库存的值,页面显示文字)]
     form.author_id.choices = [(a.id, a.name) for a in Author.query.all()]
+    # 给多选标签框设置全部标签选项
     form.tag_ids.choices = [(t.id, t.name) for t in Tag.query.all()]
-    #从数据库查出所有作者，变成 [(1, '小明'), (2, '小红')] 这种格式——第一个是提交的值，第二个是下拉框显示的文字。
+    
+    # POST提交的时候，如果没登录 → 跳登录页
     if request.method == 'POST' and 'user_id' not in session:
         flash('请先登录！')
         return redirect(url_for('login'))
+    
+    # 表单校验通过（POST + 验证全部规则通过）
     if form.validate_on_submit():
+        # 取出表单提交的数据
         title = form.title.data
         category = form.category.data
         body = form.body.data
+
+        # 创建新文章对象，author_id拿到下拉框选中的作者id
         new_article = Article(title=title, category=category, body=body, author_id=form.author_id.data)
+
+        # ✨多对多：把选中的标签id列表，查询出标签对象，赋值给文章tags
+        # form.tag_ids.data 拿到 [1,3] 这种选中标签id列表
+        # Tag.id.in_([1,3]) → 查询id在列表里面的所有Tag对象
         new_article.tags = Tag.query.filter(Tag.id.in_(form.tag_ids.data)).all()
+
+        # 添加到会话，提交入库
         db.session.add(new_article)
         db.session.commit()
         
         flash('文章《%s》已添加！' % title)
         return redirect(url_for('index'))
     
+    # 1. 从URL获取分类筛选参数（GET参数）
     category_filter = request.args.get('category', '')
+    # 2. 有分类就筛选，没有就查全部
     if category_filter:
         articles = db.session.query(Article).filter(Article.category == category_filter).all()
     else:
         articles = db.session.query(Article).all()
-        
+
+    # 3. 查出所有不重复的分类，用于页面渲染筛选按钮/下拉
     categories = db.session.query(Article.category).distinct().all()
     categories = [item[0] for item in categories]
+    # 4. 渲染模板，把数据传过去
     return render_template('home.html', form=form, articles=articles, categories=categories, category_filter=category_filter)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -270,3 +292,6 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
+
+from api import api
+app.register_blueprint(api, url_prefix='/api')#把蓝图注册进 app，所有蓝图路由前面加 /api 前缀

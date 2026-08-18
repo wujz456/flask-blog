@@ -25,7 +25,14 @@ def get_article(article_id):
     article = db.session.get(Article, article_id)
     if not article:
         return jsonify({'error': '文章不存在'}), 404
-    return jsonify({...})   # 和列表一样的字典
+    return jsonify({
+        'id': article.id,
+        'title': article.title,
+        'category': article.category,
+        'body': article.body,
+        'author': article.author.name if article.author else '未知作者',
+        'tags': [t.name for t in article.tags]
+    })
 
 @api.route('/articles', methods=['POST'])
 def create_article():
