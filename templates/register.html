@@ -8,6 +8,9 @@
     <form method="post">
         {{ form.hidden_tag() }}
         <p>{{ form.username.label }}: {{ form.username() }}</p>
+                {% for error in form.username.errors %}
+            <small style="color:red;">{{ error }}</small>
+        {% endfor %}
         <p>{{ form.password.label }}: {{ form.password() }}</p>
         {{ form.submit() }}
     </form>

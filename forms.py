@@ -1,7 +1,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField,SelectMultipleField,PasswordField,TextAreaField
-from wtforms.validators import DataRequired,Length
+from wtforms.validators import DataRequired,Length, ValidationError
 
 class ArticleForm(FlaskForm):
     title = StringField('标题', validators=[DataRequired()])
@@ -15,6 +15,11 @@ class RegisterForm(FlaskForm):
     username = StringField('用户名', validators=[DataRequired(), Length(2, 20)])
     password = PasswordField('密码', validators=[DataRequired(), Length(6, 128)])
     submit = SubmitField('注册')
+    def validate_username(self, field):
+        from app import User 
+        user = User.query.filter_by(username=field.data).first()
+        if user:
+            raise ValidationError('用户名已被注册')
 
 class LoginForm(FlaskForm):
     username = StringField('用户名', validators=[DataRequired()])
